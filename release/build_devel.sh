@@ -13,7 +13,7 @@ if [ ! -d "$TARGET_DIR" ]; then
   mkdir -p $TARGET_DIR
   cd $TARGET_DIR
   git init
-  git remote add origin git@github.com:commaai/openpilot.git
+  git remote add origin git@github.com:kylan-uta/openpilot.git
 fi
 
 echo "[-] bringing master-ci and devel in sync T=$SECONDS"
@@ -63,7 +63,7 @@ git commit -a -m "openpilot v$VERSION release"
 
 if [ ! -z "$PUSH" ]; then
   echo "[-] Pushing to $PUSH T=$SECONDS"
-  git remote set-url origin git@github.com:commaai/openpilot.git
+  git remote set-url origin git@github.com:kylan-uta/openpilot.git
   git push -f origin master-ci:$PUSH
 fi
 
