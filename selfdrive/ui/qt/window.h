@@ -21,7 +21,8 @@ private:
   Device device;
 
   QStackedLayout *main_layout;
-  HomeWindow *homeWindow;
-  SettingsWindow *settingsWindow;
-  OnboardingWindow *onboardingWindow;
+  // HomeWindow *homeWindow;
+  // SettingsWindow *settingsWindow;
+  // OnboardingWindow *onboardingWindow;
+  DriverViewWindow *driver_view;
 };

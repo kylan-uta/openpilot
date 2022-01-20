@@ -8,42 +8,44 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
   main_layout = new QStackedLayout(this);
   main_layout->setMargin(0);
 
-  homeWindow = new HomeWindow(this);
-  main_layout->addWidget(homeWindow);
-  QObject::connect(homeWindow, &HomeWindow::openSettings, this, &MainWindow::openSettings);
-  QObject::connect(homeWindow, &HomeWindow::closeSettings, this, &MainWindow::closeSettings);
-  homeWindow->showDriverView(true);
+  driver_view = new DriverViewWindow(this);
+  main_layout->addWidget(driver_view);
 
-  settingsWindow = new SettingsWindow(this);
-  main_layout->addWidget(settingsWindow);
-  QObject::connect(settingsWindow, &SettingsWindow::closeSettings, this, &MainWindow::closeSettings);
-  QObject::connect(settingsWindow, &SettingsWindow::reviewTrainingGuide, [=]() {
-    onboardingWindow->showTrainingGuide();
-    main_layout->setCurrentWidget(onboardingWindow);
-  });
-  QObject::connect(settingsWindow, &SettingsWindow::showDriverView, [=] {
-    homeWindow->showDriverView(true);
-  });
+  // homeWindow = new HomeWindow(this);
+  // main_layout->addWidget(homeWindow);
+  // QObject::connect(homeWindow, &HomeWindow::openSettings, this, &MainWindow::openSettings);
+  // QObject::connect(homeWindow, &HomeWindow::closeSettings, this, &MainWindow::closeSettings);
 
-  onboardingWindow = new OnboardingWindow(this);
-  main_layout->addWidget(onboardingWindow);
-  QObject::connect(onboardingWindow, &OnboardingWindow::onboardingDone, [=]() {
-    main_layout->setCurrentWidget(homeWindow);
-  });
-  if (!onboardingWindow->completed()) {
-    main_layout->setCurrentWidget(onboardingWindow);
-  }
+  // settingsWindow = new SettingsWindow(this);
+  // main_layout->addWidget(settingsWindow);
+  // QObject::connect(settingsWindow, &SettingsWindow::closeSettings, this, &MainWindow::closeSettings);
+  // QObject::connect(settingsWindow, &SettingsWindow::reviewTrainingGuide, [=]() {
+  //   onboardingWindow->showTrainingGuide();
+  //   main_layout->setCurrentWidget(onboardingWindow);
+  // });
+  // QObject::connect(settingsWindow, &SettingsWindow::showDriverView, [=] {
+  //   homeWindow->showDriverView(true);
+  // });
 
-  QObject::connect(uiState(), &UIState::offroadTransition, [=](bool offroad) {
-    if (!offroad) {
-      closeSettings();
-    }
-  });
-  QObject::connect(&device, &Device::interactiveTimout, [=]() {
-    if (main_layout->currentWidget() == settingsWindow) {
-      closeSettings();
-    }
-  });
+  // onboardingWindow = new OnboardingWindow(this);
+  // main_layout->addWidget(onboardingWindow);
+  // QObject::connect(onboardingWindow, &OnboardingWindow::onboardingDone, [=]() {
+  //   main_layout->setCurrentWidget(homeWindow);
+  // });
+  // if (!onboardingWindow->completed()) {
+  //   main_layout->setCurrentWidget(onboardingWindow);
+  // }
+
+  // QObject::connect(uiState(), &UIState::offroadTransition, [=](bool offroad) {
+  //   if (!offroad) {
+  //     closeSettings();
+  //   }
+  // });
+  // QObject::connect(&device, &Device::interactiveTimout, [=]() {
+  //   if (main_layout->currentWidget() == settingsWindow) {
+  //     closeSettings();
+  //   }
+  // });
 
   // load fonts
   QFontDatabase::addApplicationFont("../assets/fonts/opensans_regular.ttf");
@@ -69,15 +71,15 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
 }
 
 void MainWindow::openSettings() {
-  main_layout->setCurrentWidget(settingsWindow);
+  // main_layout->setCurrentWidget(settingsWindow);
 }
 
 void MainWindow::closeSettings() {
-  main_layout->setCurrentWidget(homeWindow);
+  // main_layout->setCurrentWidget(homeWindow);
 
-  if (uiState()->scene.started) {
-    homeWindow->showSidebar(false);
-  }
+  // if (uiState()->scene.started) {
+  //   homeWindow->showSidebar(false);
+  // }
 }
 
 bool MainWindow::eventFilter(QObject *obj, QEvent *event) {
