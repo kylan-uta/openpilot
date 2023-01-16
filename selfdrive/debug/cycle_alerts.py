@@ -54,7 +54,7 @@ def cycle_alerts(duration=200, is_metric=False):
 
       a = events.create_alerts([et, ], [CP, sm, is_metric, 0])
       AM.add_many(frame, a)
-      AM.process_alerts(frame)
+      AM.process_alerts(frame, [et, ])
       print(AM.alert)
       for _ in range(duration):
         dat = messaging.new_message()

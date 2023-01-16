@@ -4,6 +4,7 @@
 
 #include <QStackedLayout>
 
+#include "selfdrive/ui/qt/sidebar.h"
 #include "selfdrive/common/util.h"
 #include "selfdrive/ui/qt/widgets/cameraview.h"
 
@@ -36,12 +37,15 @@ public:
   explicit DriverViewWindow(QWidget *parent);
 
 signals:
+  void openSettings();
+  void closeSettings();
   void done();
 
 protected:
   void mouseReleaseEvent(QMouseEvent* e) override;
 
 private:
+  Sidebar *sidebar;
   CameraViewWidget *cameraView;
   DriverViewScene *scene;
   QStackedLayout *layout;

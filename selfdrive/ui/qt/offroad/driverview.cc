@@ -1,5 +1,6 @@
 #include "selfdrive/ui/qt/offroad/driverview.h"
 
+#include <QHBoxLayout>
 #include <QPainter>
 
 #include "selfdrive/ui/qt/qt_window.h"
@@ -8,9 +9,18 @@
 const int FACE_IMG_SIZE = 130;
 
 DriverViewWindow::DriverViewWindow(QWidget* parent) : QWidget(parent) {
+  QHBoxLayout *main_layout = new QHBoxLayout(this);
+  main_layout->setMargin(0);
+  main_layout->setSpacing(0);
+
+  sidebar = new Sidebar(this);
+  main_layout->addWidget(sidebar);
+  QObject::connect(sidebar, &Sidebar::openSettings, this, &DriverViewWindow::openSettings);
+
   setAttribute(Qt::WA_OpaquePaintEvent);
   layout = new QStackedLayout(this);
   layout->setStackingMode(QStackedLayout::StackAll);
+  main_layout->addLayout(layout);
 
   cameraView = new CameraViewWidget("camerad", VISION_STREAM_RGB_FRONT, true, this);
   layout->addWidget(cameraView);

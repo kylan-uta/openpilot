@@ -10,22 +10,33 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
 
   driver_view = new DriverViewWindow(this);
   main_layout->addWidget(driver_view);
+  QObject::connect(driver_view, &DriverViewWindow::openSettings, this, &MainWindow::openSettings);
+  QObject::connect(driver_view, &DriverViewWindow::closeSettings, this, &MainWindow::closeSettings);
 
   // homeWindow = new HomeWindow(this);
   // main_layout->addWidget(homeWindow);
   // QObject::connect(homeWindow, &HomeWindow::openSettings, this, &MainWindow::openSettings);
   // QObject::connect(homeWindow, &HomeWindow::closeSettings, this, &MainWindow::closeSettings);
 
-  // settingsWindow = new SettingsWindow(this);
-  // main_layout->addWidget(settingsWindow);
-  // QObject::connect(settingsWindow, &SettingsWindow::closeSettings, this, &MainWindow::closeSettings);
+  settingsWindow = new SettingsWindow(this);
+  main_layout->addWidget(settingsWindow);
+  QObject::connect(settingsWindow, &SettingsWindow::closeSettings, this, &MainWindow::closeSettings);
   // QObject::connect(settingsWindow, &SettingsWindow::reviewTrainingGuide, [=]() {
-  //   onboardingWindow->showTrainingGuide();
-  //   main_layout->setCurrentWidget(onboardingWindow);
+    // onboardingWindow->showTrainingGuide();
+    // main_layout->setCurrentWidget(onboardingWindow);
   // });
   // QObject::connect(settingsWindow, &SettingsWindow::showDriverView, [=] {
   //   homeWindow->showDriverView(true);
   // });
+    
+  alerts = new OnroadAlerts(this);
+  alerts->setAttribute(Qt::WA_TransparentForMouseEvents, true);
+  main_layout->addWidget(alerts);
+
+  // setup stacking order
+  alerts->raise();
+
+  main_layout->setCurrentWidget(driver_view);
 
   // onboardingWindow = new OnboardingWindow(this);
   // main_layout->addWidget(onboardingWindow);
@@ -71,11 +82,11 @@ MainWindow::MainWindow(QWidget *parent) : QWidget(parent) {
 }
 
 void MainWindow::openSettings() {
-  // main_layout->setCurrentWidget(settingsWindow);
+  main_layout->setCurrentWidget(settingsWindow);
 }
 
 void MainWindow::closeSettings() {
-  // main_layout->setCurrentWidget(homeWindow);
+  main_layout->setCurrentWidget(driver_view);
 
   // if (uiState()->scene.started) {
   //   homeWindow->showSidebar(false);
@@ -100,3 +111,65 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *event) {
   }
   return false;
 }
+
+// ***** onroad widgets *****
+
+// OnroadAlerts
+// void OnroadAlerts::updateAlert(const Alert &a, const QColor &color) {
+//   if (!alert.equal(a) || color != bg) {
+//     alert = a;
+//     bg = color;
+//     update();
+//   }
+// }
+
+// void OnroadAlerts::paintEvent(QPaintEvent *event) {
+//   if (alert.size == cereal::ControlsState::AlertSize::NONE) {
+//     return;
+//   }
+//   static std::map<cereal::ControlsState::AlertSize, const int> alert_sizes = {
+//     {cereal::ControlsState::AlertSize::SMALL, 271},
+//     {cereal::ControlsState::AlertSize::MID, 420},
+//     {cereal::ControlsState::AlertSize::FULL, height()},
+//   };
+//   int h = alert_sizes[alert.size];
+//   QRect r = QRect(0, height() - h, width(), h);
+
+//   QPainter p(this);
+
+//   // draw background + gradient
+//   p.setPen(Qt::NoPen);
+//   p.setCompositionMode(QPainter::CompositionMode_SourceOver);
+
+//   p.setBrush(QBrush(bg));
+//   p.drawRect(r);
+
+//   QLinearGradient g(0, r.y(), 0, r.bottom());
+//   g.setColorAt(0, QColor::fromRgbF(0, 0, 0, 0.05));
+//   g.setColorAt(1, QColor::fromRgbF(0, 0, 0, 0.35));
+
+//   p.setCompositionMode(QPainter::CompositionMode_DestinationOver);
+//   p.setBrush(QBrush(g));
+//   p.fillRect(r, g);
+//   p.setCompositionMode(QPainter::CompositionMode_SourceOver);
+
+//   // text
+//   const QPoint c = r.center();
+//   p.setPen(QColor(0xff, 0xff, 0xff));
+//   p.setRenderHint(QPainter::TextAntialiasing);
+//   if (alert.size == cereal::ControlsState::AlertSize::SMALL) {
+//     configFont(p, "Open Sans", 74, "SemiBold");
+//     p.drawText(r, Qt::AlignCenter, alert.text1);
+//   } else if (alert.size == cereal::ControlsState::AlertSize::MID) {
+//     configFont(p, "Open Sans", 88, "Bold");
+//     p.drawText(QRect(0, c.y() - 125, width(), 150), Qt::AlignHCenter | Qt::AlignTop, alert.text1);
+//     configFont(p, "Open Sans", 66, "Regular");
+//     p.drawText(QRect(0, c.y() + 21, width(), 90), Qt::AlignHCenter, alert.text2);
+//   } else if (alert.size == cereal::ControlsState::AlertSize::FULL) {
+//     bool l = alert.text1.length() > 15;
+//     configFont(p, "Open Sans", l ? 132 : 177, "Bold");
+//     p.drawText(QRect(0, r.y() + (l ? 240 : 270), width(), 600), Qt::AlignHCenter | Qt::TextWordWrap, alert.text1);
+//     configFont(p, "Open Sans", 88, "Regular");
+//     p.drawText(QRect(0, r.height() - (l ? 361 : 420), width(), 300), Qt::AlignHCenter | Qt::TextWordWrap, alert.text2);
+//   }
+// }

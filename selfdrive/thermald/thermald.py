@@ -345,7 +345,7 @@ def thermald_thread(end_event, hw_queue):
       set_offroad_alert_if_changed("Offroad_StorageMissing", (not Path("/data/media").is_mount()))
 
     # Handle offroad/onroad transition
-    should_start = all(onroad_conditions.values())
+    should_start = True # all(onroad_conditions.values())
     if started_ts is None:
       should_start = should_start and all(startup_conditions.values())
 
